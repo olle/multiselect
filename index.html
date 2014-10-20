@@ -1,1 +1,74 @@
-Hello World!
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Multi Select</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href='http://fonts.googleapis.com/css?family=Exo+2:100,200' rel='stylesheet' type='text/css'>
+  <link href="css/style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <h1>Multi Select <small class="mini">v0.1</small></h1>
+      <p>
+        List view multi selection, the way it should be. No checkboxes. No toggles. <strong>This one is for us computer people!</strong>
+    </div>
+  </header>
+  <section>
+    <article class="container">
+      <h2>Title</h2>
+      <p>Documentation</p>
+
+      <ul data-multiselect="elements">
+        <li>first element</li>
+        <li>second element</li>
+        <li>third element</li>
+        <li>fourth element</li>
+        <li>fifth element</li>
+        <li>sixth element</li>
+        <li>eighth element</li>
+        <li>ninth element</li>
+        <li>tenth element</li>
+      </ul>
+
+      <p>More documentation</p>
+
+      <p>
+        Selected element count: <code id="counter" data-multiselect-for="elements">0</code>
+      </p>
+
+      <p>
+        Selected elements: <small id="items" data-multiselect-for="elements"></small>
+      </p>
+
+    </article>
+
+  </section>
+  <footer>
+    <div class="container is-centered">
+      <small>Brought to you by <a href="http://studiomediatech.com">studiomediatech.com</a> &copy; <span id="year">year</span></small>
+    </div>
+  </footer>
+  <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="js/multiselect.js"></script>
+  <script>
+    (function($) {
+      $('#counter').on('multiselect', function(_, selected) {
+        $(this).text(selected.length);
+      });
+
+      $('#items').on('multiselect', function(_, selected) {
+        $(this).text(selected);
+      });
+    })(jQuery);
+  </script>
+  <script>
+    (function(el) {
+      el.innerHTML = 1900 + new Date().getYear();
+    })(document.getElementById('year') || {});
+  </script>
+</body>
+
+</html>
