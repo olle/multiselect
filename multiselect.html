@@ -1,0 +1,173 @@
+<html>
+  <head>
+  <title>Multiselect - It's that simple</title>
+  <link href='http://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css' />
+  <style>
+    html, body {
+      font-size: 36px;
+      color: #333;
+      background: #f1f1f1;
+      padding: 100px;
+      margin: 0;
+      padding: 0;
+    }
+    
+    ul {
+      list-style: none outside none;
+      display: block;
+      width: 12em;
+      margin: 2em auto;
+      padding: 0;
+    }
+    li {
+      text-align: center;
+      display: block;
+      width: auto;
+      
+            user-select: none; /* CSS3 (little to no support) */
+        -ms-user-select: none; /* IE 10+ */
+       -moz-user-select: none; /* Gecko (Firefox) */
+    -webkit-user-select: none; /* Webkit (Safari, Chrome) */      
+      
+    }
+    li:hover {
+      cursor: pointer;
+      background: #fff;
+    }
+    li.is-selected {
+      background: #aef1ff;
+    }
+    li.is-selected:hover {
+      background: #caf1ff;
+    }
+    
+    p {
+      color: #000;
+      font-size: 16pt;
+      margin: 2em 0;
+      display: block;
+      text-align: center;
+    }
+    
+    .aflat {
+      font-family: 'Lato', 'Helvetica Neue', sans-serif;
+      font-weight: 100;
+    }
+  </style>
+  <script src="libs/jquery/jquery.js"></script>
+  <script src="src/multiselect.js"></script>
+  <head>
+  <body class="aflat">
+    <p>Multiselect widget for lists. Just what we need!</p>
+    <ul class="items">
+      <li>first element</li>
+      <li>second element</li>
+      <li>third element</li>
+      <li>fourth element</li>
+      <li>fifth element</li>
+      <li>sixth element</li>          
+      <li>eighth element</li>          
+      <li>ninth element</li>          
+      <li>tenth element</li>          
+    </ul>
+    <p>
+      <sup id="counter" class="js-on-toggle"></sup>
+      <span id="text-state" class="js-on-toggle">I will recieve the selected state.</span>
+    </p>
+    <script>
+    ;(function ($) {
+
+      $('.items').multiselect(function (state) {
+        console.log(state);
+      });
+
+      /*
+      return false;
+
+    
+      $('body, html').on('click', function (ev) {
+        $('.js-toggle').trigger('clear');
+      });
+
+    $('ul.js-toggle').each(function (_, ul) {
+        
+        var that = this;
+        
+        $(that).on('js-toggle-changed', function (_) {
+          var state = [];
+          $(that).find('li.is-active').each(function (i, el) {
+            state[state.length] = el.textContent;
+          });
+          
+          $('.js-on-toggle').trigger('on-toggled', [state]);
+        });
+        
+        var all = [];
+        var last = null;
+        var index = {};
+
+        $(that).on('clear', function (_) {
+          $(that).find('li').removeClass('is-active');
+          $(that).trigger('toggled'); 
+          last = all[0];         
+        });
+        
+        $(ul).find('li').each(function (i, li) {
+          
+          li['js-toggle-id'] = i;
+          all[all.length] = li;
+          last = all[0];
+          $(li).on('click', function clickedListItem (ev) {
+            
+            var current = ev.target;            
+            var $current = $(current);
+            
+            ev.stopImmediatePropagation();
+            ev.preventDefault();
+            
+            if (ev.shiftKey) {
+              
+              var range = [];
+              
+              range[0] = last['js-toggle-id'];
+              range[1] = current['js-toggle-id'];
+              
+              if (range[0] > range[1]) {
+                range.reverse();
+              }
+              
+              $('li', that).slice(range[0], range[1] + 1).addClass('is-active');
+              
+            } else if (ev.ctrlKey || ev.metaKey) {
+              
+              $current.toggleClass('is-active');
+              last = current;
+              
+            } else {
+              
+              $(all).each(function (_, el) {
+                $(el).removeClass('is-active');
+              });
+              
+              $current.toggleClass('is-active');
+              last = current;
+            }
+            
+            $(that).trigger('js-toggle-changed');
+          });
+        });
+      });
+      
+      $('#text-state.js-on-toggle').on('on-toggled', function (_, state) {
+        $(this).text(state);
+      });
+      
+      $('#counter.js-on-toggle').on('on-toggled', function (_, state) {
+        $(this).text(state.length);
+      });
+     */
+      
+    })(jQuery);
+    </script>
+  </body>
+</html>
