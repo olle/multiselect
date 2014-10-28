@@ -1,109 +1,81 @@
 (function($) {
   'use strict';
 
-  // 1. Register multiselect sources
-  $('[data-multiselect]').each(function (_, el) {
-    console.log('Registering ', el);
-  });
+  var CLASS_SELECTED = 'is-active';
 
+  var EVENT_CLEAR = 'multiselect-clear';
+  var EVENT_CHANGE = 'multiselect-change';
 
-  /* Clicking on the body or html area will 'clear' the current selection */
-  $('body, html').on('click', function(ev) {
-    $('[nope-data-multiselect]').trigger('clear');
-  });
+  var DATA_RANGE_START = 'multiselect-start';
+  var DATA_ITEM_INDEX = 'multiselect-index';
 
-  /* Initialize the widget for any list with the behaviour class 'js-toggle' */
-  $('ul[nope-data-multiselect]').each(function(_, ul) {
+  // Register multi-select source on lists
+  $('[data-multiselect]').each(function() {
 
-    /* The list (ul) is our root element */
-    var that = this;
+    var $list = $(this);
 
-    /* LI toggles are gathered as a complete state */
-    $(that).on('multiselect', function(_) {
-      var state = [];
-      $(that).find('li.is-active').each(function(i, el) {
-        state[state.length] = el.textContent;
-      });
+    $list.find('li').each(function(index) {
 
-      /* Notify listeners */
-      $('[data-multiselect-on]').trigger('multiselect', [state]);
-    });
+      var $item = $(this);
 
-    /* All the list items known */
-    var all = [];
+      $item.data(DATA_ITEM_INDEX, index);
 
-    /* Last toggled item */
-    var last = null;
+      $item.on('click', function(event) {
 
-    /* List item => item index (number) */
-    var index = {};
+        event.stopImmediatePropagation();
+        event.preventDefault();
 
-    /* Clear all toggles */
-    $(that).on('clear', function(_) {
-      $(that).find('li').removeClass('is-active');
-      $(that).trigger('toggled');
-      last = all[0];
-    });
+        var $clicked = $(event.target);
+        var index = $clicked.data(DATA_ITEM_INDEX);
 
-    /* Initialize list item handlers */
-    $(ul).find('li').each(function(i, li) {
+        if (event.shiftKey) {
 
-      /* Add index property to element */
-      li['js-toggle-id'] = i;
+          var start = $list.data(DATA_RANGE_START) || 0;
+          var end = index;
 
-      /* Save to all-collection */
-      all[all.length] = li;
-
-      /* Last toggled is first list item by default */
-      last = all[0];
-
-      /* Handle click on list item */
-      $(li).on('click', function clickedListItem(ev) {
-
-        /* Current normal and jQuery-wrapped element */
-        var current = ev.target;
-        var $current = $(current);
-
-        /* Don't let this click slip away */
-        ev.stopImmediatePropagation();
-        ev.preventDefault();
-
-        /* Handle range-selection */
-        if (ev.shiftKey) {
-
-          var range = [];
-
-          range[0] = last['js-toggle-id'];
-          range[1] = current['js-toggle-id'];
-
-          if (range[0] > range[1]) {
-            range.reverse();
+          if (start > end) {
+            end = start;
+            start = index;
           }
 
-          $('li', that).slice(range[0], range[1] + 1).addClass('is-active');
+          $list.find('li').slice(start, end + 1).addClass(CLASS_SELECTED);
 
-          /* Handle multi-select */
-        } else if (ev.ctrlKey || ev.metaKey) {
+        } else if (event.ctrlKey || event.metaKey) {
 
-          $current.toggleClass('is-active');
-          last = current;
+          $list.data(DATA_RANGE_START, index);
+          $clicked.toggleClass(CLASS_SELECTED);
 
-          /* Handle single, toggle select */
         } else {
 
-          /* Clear all selection first */
-          $(all).each(function(_, el) {
-            $(el).removeClass('is-active');
-          });
+          $list.data(DATA_RANGE_START, index);
+          $list.children('li').removeClass(CLASS_SELECTED);
+          $clicked.addClass(CLASS_SELECTED);
 
-          $current.toggleClass('is-active');
-          last = current;
         }
 
-        /* Trigger that selection changed */
-        $(that).trigger('js-toggle-changed');
+        var payload = $list.find('li.' + CLASS_SELECTED);
+        $('[data-multiselect-bind="' + $list.data('multiselect') + '"]').trigger(EVENT_CHANGE, [payload]);
+
       });
+
     });
+
+    // Add clear-handler
+    $list.on(EVENT_CLEAR, function() {
+
+      $list.children('li').removeClass(CLASS_SELECTED);
+      var payload = [];
+      $('[data-multiselect-bind="' + $list.data('multiselect') + '"]').trigger(EVENT_CHANGE, [payload]);
+
+    });
+
+  });
+
+  // Clicking on the body or html will clear the current selection */
+  $('body, html').on('click', function() {
+
+    $('[data-multiselect]').trigger(EVENT_CLEAR);
+
   });
 
 })(jQuery);

@@ -1,25 +1,78 @@
-<html>
+<!doctype html>
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
   <title>Multi Select</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/zenburn.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
   <link href='http://fonts.googleapis.com/css?family=Exo+2:100,200' rel='stylesheet' type='text/css'>
   <link href="css/style.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
   <header>
+    <div id="debug"></div>
     <div class="container">
       <h1>Multi Select <small class="mini">v0.1</small></h1>
       <p>
-        List view multi selection, the way it should be. No checkboxes. No toggles. <strong>This one is for us computer people!</strong>
+        List view multi selection, the way it should be. No checkboxes. No
+        toggles. <strong>This one is for us computer people!</strong></p>
     </div>
   </header>
   <section>
     <article class="container">
-      <h2>Title</h2>
-      <p>Documentation</p>
+      <h2>Getting started</h2>
+      <p>
+        Enable multi-select on <dfn>UL</dfn> or <dfn>OL</dfn> lists, by adding
+        the <dfn>data-multiselect</dfn> attribute to the element. The attribute
+        value should be an identifier for the multi-select.</p>
+
+      <pre><code class="html">&lt;ul data-multiselect="my-things"&gt;
+  &lt;li&gt;...&lt;/li&gt;
+  ...
+&lt;/ul&gt;
+</code></pre>
+
+      <h3>Features</h3>
+      <p>
+        Multi select provides list item selection, with support for
+        <dfn>CMD &#8984;</dfn> or <dfn>CTRL</dfn>, for toggling, and range
+        selection using <dfn>SHIFT &#8679;</dfn>.</p>
+
+      <h3>Data bindings</h3>
+      <p>
+        You can bind <em>sinks</em> for your multi-selects, a simple variant of
+        data-binding. Simply add the <dfn>data-multiselect-bind</dfn> attribute
+        to any element that should receive the selection. The attribute value
+        should be the identifier to bind to.</p>
+
+      <pre><code class="html">&lt;span data-multiselect-bind="my-things"&gt;0&lt;/span&gt;</code></pre>
+
+      <h4>Data API</h4>
+      <p>
+        Each bound element will receive the <dfn>multiselect-change</dfn> event
+        with a payload of the current selection. The payload is passed as the
+        second argument to the event handler
+        <dfn>function (event, payload) { ... }</dfn> and contains an array of
+        the selected elements.</p>
+
+      <pre><code class="javascript">
+(function($) {
+  $('#counter').on('multiselect-change', function(_, selected) {
+    $(this).text(selected.length);
+  });
+})(jQuery);
+</code></pre>
+
+
+    </article>
+
+    <article class="container">
+      <h2>Example</h2>
+
+      <p>Here we have a simple unordered list that is extended with multi-select.</p>
 
       <ul data-multiselect="elements">
         <li>first element</li>
@@ -28,19 +81,12 @@
         <li>fourth element</li>
         <li>fifth element</li>
         <li>sixth element</li>
-        <li>eighth element</li>
-        <li>ninth element</li>
-        <li>tenth element</li>
       </ul>
 
-      <p>More documentation</p>
+      <p>The counter below receives the selection, and has a counter function registered on the event.</p>
 
       <p>
-        Selected element count: <code id="counter" data-multiselect-for="elements">0</code>
-      </p>
-
-      <p>
-        Selected elements: <small id="items" data-multiselect-for="elements"></small>
+        Bound element count: <dfn id="counter" data-multiselect-bind="elements">0</dfn>
       </p>
 
     </article>
@@ -51,16 +97,15 @@
       <small>Brought to you by <a href="http://studiomediatech.com">studiomediatech.com</a> &copy; <span id="year">year</span></small>
     </div>
   </footer>
+  <script>
+    hljs.initHighlightingOnLoad();
+  </script>
   <script src="bower_components/jquery/dist/jquery.min.js"></script>
   <script src="js/multiselect.js"></script>
   <script>
     (function($) {
-      $('#counter').on('multiselect', function(_, selected) {
-        $(this).text(selected.length);
-      });
-
-      $('#items').on('multiselect', function(_, selected) {
-        $(this).text(selected);
+      $('#counter').on('multiselect-change', function(_, selected) {
+        $(this).text((selected || []).length);
       });
     })(jQuery);
   </script>
